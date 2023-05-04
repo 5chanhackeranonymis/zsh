@@ -1,0 +1,30 @@
+# aliasif program alias=program
+aliasif() {
+    if [[ -o interactive ]]; then
+        if [ -x "$(command -v "$1")" ]; then
+            alias "$2"
+        else
+            alias "$3"
+        fi
+    fi
+}
+
+ifcommand () {
+    if [ -x "$(command -v "$1")" ]; then
+        "${@:2}"
+    fi
+}
+
+ifsession() {
+    if [[ "$WAYLAND_DISPLAY" == *"wayland"* ]] ||
+       [[ "$DISPLAY" == *":"* ]]; then
+        "$@"
+    fi
+}
+
+# path_add $HOME/.bin
+path_add() {
+    if [ -d "$@" ]; then
+        export PATH="$@":$PATH
+    fi
+}

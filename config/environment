@@ -1,0 +1,35 @@
+#if [[ -f $HOME/.xinitrc ]]; then
+#	if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+#		exec startx 2>/dev/null
+#	fi
+#fi
+
+#if [ "$TMUX" = "" ]; then tmux attach; fi
+
+if [ -d $HOME/Azule ]; then
+	source $HOME/Azule/azule-functions
+fi
+
+export GPG_TTY=$(tty)
+
+path_add $HOME/.local/flatpak/bin
+path_add $HOME/.local/bin
+path_add $HOME/.bin
+
+if [[ -o interactive ]]; then
+	export ignoredfiles="\
+.cache|\
+.bashrc|\
+.bash_history|\
+.npm|\
+.gitconfig|\
+.gnupg|\
+.hushlogin|\
+.Xauthority|\
+.xinitrc|\
+.git-credentials|\
+.google_authenticator|\
+.pki|\
+.gnupg|\
+.ssh"
+fi

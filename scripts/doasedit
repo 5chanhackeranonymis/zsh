@@ -1,0 +1,70 @@
+#!/bin/sh -e
+# found this from some random mf online, made his script worse.
+
+help() {
+	cat - >&2 <<EOF
+doasedit - like sudoedit, but for doas
+
+doasedit file...
+
+Every argument will be treated as a file to edit. There's no support for
+passing arguments to doas, so you can only doas root.
+
+This script is SECURITY SENSITIVE! Special care has been taken to correctly
+preserve file attributes. Please exercise CAUTION when modifying AND using
+this script.
+EOF
+}
+
+case "$1" in
+	--help|-h) help; exit 0;;
+	*) ;;
+esac
+
+export TMPDIR=/dev/shm/
+trap 'trap - EXIT HUP QUIT TERM INT ABRT; rm -f "$tmp" "$tmpcopy"' EXIT HUP QUIT TERM INT ABRT
+
+for file; do
+	case "$file" in -*) file=./"$file" ;; esac
+
+	tmp="$(mktemp)"
+	if [ -f "$file" ] && [ ! -r "$file" ]; then
+		doas cat "$file" > "$tmp"
+	elif [ -r "$file" ]; then
+		cat "$file" > "$tmp"
+	fi
+
+	tmpcopy="$(mktemp)"
+	cat "$tmp" > "$tmpcopy"
+
+	if [ -z "$VISUAL" ]; then
+		echo '\$VISUAL is not set, trying to edit with vi.'
+	fi
+
+
+	if [ -x "$(command -v inotifywait)" ]; then
+		${VISUAL:-vi} "$tmp" & 2>/dev/null
+		inotifywait -qq -e modify $tmp
+	else
+		echo 'warning: inotify-utils not installed'
+		${VISUAL:-vi} "$tmp"
+	fi
+	if cmp -s "$tmp" "$tmpcopy"; then
+		echo 'File unchanged, exiting...'
+	else
+		#lol this is so funny
+		error=$(
+		doas dd if="$tmp" of="$file" 2>&1
+		)
+		ddrc=$?
+		if [ $ddrc != 0 ]; then
+		echo dd exited with return code $ddrc: $error
+		exit $ddrc
+		fi
+		realpath=$(realpath $file)
+		echo -e "changes written to \e[35m$realpath\e[0m successfully"
+	fi
+
+	rm "$tmp" "$tmpcopy"
+done
+

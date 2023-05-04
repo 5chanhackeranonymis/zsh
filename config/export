@@ -1,0 +1,15 @@
+preferred_cli_editor=helix
+#preferred_gui_editor=code
+preferred_gui_editor=$preferred_cli_editor
+
+ifcommand $preferred_cli_editor export EDITOR=$preferred_cli_editor
+ifcommand $preferred_cli_editor export VISUAL=$preferred_cli_editor
+
+if [[ "$WAYLAND_DISPLAY" == *"wayland"* ]] ||
+   [[ "$DISPLAY" == *":"* ]]; then
+    ifcommand $preferred_gui_editor export EDITOR=$preferred_gui_editor
+    ifcommand $preferred_gui_editor export VISUAL=$preferred_gui_editor
+fi
+
+export LESSHISTFILE=~/.cache/less/history
+export STARSHIP_CACHE=~/.cache/starship

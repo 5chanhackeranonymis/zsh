@@ -1,0 +1,70 @@
+VIMODE=" I"
+
+bindkey -v
+bindkey "\e[3~" delete-char
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+bindkey "^K" kill-line
+bindkey "^L" clear-screen
+bindkey "^R" history-incremental-search-backward
+bindkey "^U" kill-whole-line
+bindkey "^W" backward-kill-word
+bindkey "^Y" yank
+
+function zle-line-init() {
+  # Note: this initial mode must match the $VIMODE initial value above.
+  zle -K viins
+}
+
+zle -N zle-line-init
+
+function zle-keymap-select {
+  VIMODE="${${KEYMAP/vicmd/ C}/(main|viins)/ I}"
+  zle reset-prompt
+}
+
+zle -N zle-keymap-select
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
+setopt autocd
+setopt hist_find_no_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_expire_dups_first
+setopt hist_save_no_dups
+setopt share_history
+setopt ALWAYS_TO_END
+
+HISTFILE="$HOME/.config/zsh/history"
+HISTSIZE='1000000000'
+SAVEHIST='1000000000'
+
+autoload -Uz compinit
+compinit
+
+#case insensitive
+#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+#matches the end of words
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+zstyle ':completion:*:*:*:default' menu yes select search
+zstyle ':completion:*' completer _extensions _complete _approximate
+zstyle ':completion:*' file-sort modification reverse
+zstyle ':completion:*' special-dirs false
+zstyle ':completion:*' use-cache on
+
+zstyle ':completion:*' squeeze-slashes true
+
+
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*:*:-command-:*:*' group-order alias builtins functions commands
+
+zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
+zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}

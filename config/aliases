@@ -1,0 +1,58 @@
+### Archshit
+aliasif pacman removeorphans="pacman -Qtdq | doas pacman -Rns -"
+aliasif pacman pacman="sudo pacman"
+
+aliasif pacman p="sudo pacman"
+aliasif yay p="yay"
+aliasif paru p="paru"
+###
+
+aliasif wget wget="wget --hsts-file=$HOME/.cache/wget-hsts"
+aliasif startx startx="startx 2>/dev/null"
+aliasif grep grep="grep --color=auto"
+
+
+aliasif bat cat="bat --pager=never" bat="cat"
+
+aliasif exa tree="exa -T -I='${ignoredfiles}'"
+aliasif exa ls="exa --icons -I='${ignoredfiles}'"
+aliasif exa l="exa --icons -I='${ignoredfiles}'"
+
+aliasif rm r="rm"
+
+aliasif zoxide cd=z
+aliasif zoxide zz=zi
+aliasif broot zc=broot
+
+editors=("e" "vi" "vim" "nvim" "nano" "micro" "hx" "nv" "neovide")
+for ed in $editors; do
+	alias $ed="$EDITOR"
+done
+
+cleartypos=("c" "ear" "cls")
+for a in $cleartypos; do
+	alias $a="clear"
+done
+
+# May allah forgive me for I have sinned
+if [ ! -x "$(command -v doas)" ]; then
+	doas() {
+		if [[ $1 == "e" || $1 == "nv" || $1 == "nvim" || $1 == "nano" || $1 == "micro" || $1 == "vim" || $1 == "neovide" ]]; then
+			command sudoedit "${@:2}"
+		elif [[ $1 == "rm" ]] || [[ $1 == "r" ]]; then
+			command sudo rm "${@:2}"
+		else
+			command sudo "$@"
+		fi
+	}
+else
+	doas() {
+		if [[ $1 == "e" || $1 == "nv" || $1 == "nvim" || $1 == "nano" || $1 == "micro" || $1 == "vim" || $1 == "neovide" ]]; then
+			command $HOME/.config/zsh/scripts/doasedit "${@:2}"
+		elif [[ $1 == "rm" ]] || [[ $1 == "r" ]]; then
+			command doas rm "${@:2}"
+		else
+			command doas "$@"
+		fi
+	}
+fi

@@ -22,7 +22,6 @@ ifsession() {
     fi
 }
 
-# path_add $HOME/.bin
 path_add() {
     if [ -d "$@" ]; then
         export PATH="$@":$PATH

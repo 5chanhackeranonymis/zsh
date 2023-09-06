@@ -10,24 +10,37 @@ aliasif paru p="paru"
 aliasif wget wget="wget --hsts-file=$HOME/.cache/wget-hsts"
 aliasif startx startx="startx 2>/dev/null"
 aliasif grep grep="grep --color=auto"
-
+aliasif yarn yarn="yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config"
 
 aliasif bat cat="bat --pager=never" bat="cat"
 
 aliasif exa tree="exa -T -I='${ignoredfiles}'"
-aliasif exa ls="exa --icons -I='${ignoredfiles}'"
-aliasif exa l="exa --icons -I='${ignoredfiles}'"
+
+lias=("l" "ls")
+for a in $lias; do
+	aliasif exa $a="exa --icons --octal-permissions --no-time -h -g --git -I='${ignoredfiles}'"
+done
+
+aliasif exa ll="exa --icons --octal-permissions --no-time -h -g --git -l -I='${ignoredfiles}'"
 
 aliasif rm r="rm"
 
 aliasif zoxide cd=z
 aliasif zoxide zz=zi
-aliasif broot zc=broot
 
 editors=("e" "vi" "vim" "nvim" "nano" "micro" "hx" "nv" "neovide")
 for ed in $editors; do
-	alias $ed="$EDITOR"
+	aliasif $EDITOR $ed="$EDITOR"
 done
+
+aliasif ssh-ident ssh=ssh-ident
+
+# I hope you die in a car crash
+fuckoff() {
+	for annoyances in $(pgrep -f "$@"); do
+		kill -9 "$annoyances"
+	done
+}
 
 cleartypos=("c" "ear" "cls")
 for a in $cleartypos; do

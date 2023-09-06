@@ -1,13 +1,15 @@
-#if [[ -f $HOME/.xinitrc ]]; then
-#	if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-#		exec startx 2>/dev/null
-#	fi
+#if [ -d $HOME/.config/Azule ]; then
+#	source $HOME/.config/Azule/azule-functions
 #fi
 
-#if [ "$TMUX" = "" ]; then tmux attach; fi
-
-if [ -d $HOME/Azule ]; then
-	source $HOME/Azule/azule-functions
+if [ ! $UID = 0 ]; then
+	if [ -z "$TMUX" ]; then
+		if [[ -n "$DISPLAY" ]]; then
+        	tmux;exit
+		else
+			#hyprland-run
+		fi
+	fi
 fi
 
 export GPG_TTY=$(tty)

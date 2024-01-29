@@ -14,14 +14,14 @@ aliasif yarn yarn="yarn --use-yarnrc $XDG_CONFIG_HOME/yarn/config"
 
 aliasif bat cat="bat --pager=never" bat="cat"
 
-aliasif exa tree="exa -T -I='${ignoredfiles}'"
+aliasif eza tree="eza -T -I='${ignoredfiles}'"
 
 lias=("l" "ls")
 for a in $lias; do
-	aliasif exa $a="exa --icons --octal-permissions --no-time -h -g --git -I='${ignoredfiles}'"
+	aliasif eza $a="eza --icons --octal-permissions --no-time -h -g --git -I='${ignoredfiles}'"
 done
 
-aliasif exa ll="exa --icons --octal-permissions --no-time -h -g --git -l -I='${ignoredfiles}'"
+aliasif eza ll="eza --icons --octal-permissions --no-time -h -g --git -l -I='${ignoredfiles}'"
 
 aliasif rm r="rm"
 
@@ -36,7 +36,7 @@ done
 aliasif ssh-ident ssh=ssh-ident
 
 # I hope you die in a car crash
-fuckoff() {
+fo() {
 	for annoyances in $(pgrep -f "$@"); do
 		kill -9 "$annoyances"
 	done

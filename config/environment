@@ -5,7 +5,7 @@
 if [ ! $UID = 0 ]; then
 	if [ -z "$TMUX" ]; then
 		if [[ -n "$DISPLAY" ]]; then
-        	tmux;exit
+        	#tmux;exit
 		else
 			#hyprland-run
 		fi
@@ -17,6 +17,8 @@ export GPG_TTY=$(tty)
 path_add $HOME/.local/flatpak/bin
 path_add $HOME/.local/bin
 path_add $HOME/.bin
+path_add $HOME/kde/src/kdesrc-build
+path_add $HOME/kde/usr/bin
 
 if [[ -o interactive ]]; then
 	export ignoredfiles="\
